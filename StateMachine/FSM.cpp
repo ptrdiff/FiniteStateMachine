@@ -3,14 +3,16 @@
 
 timur::StateMachine::StateMachine()
 {
-	_fsmTable = { {
-		{&StateMachine::toState2,			&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState},
-		{&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState,	&StateMachine::toState3},
-		{&StateMachine::toUndefinedState,	&StateMachine::toState4,			&StateMachine::toUndefinedState},
-		{&StateMachine::toUndefinedState,	&StateMachine::toState4,			&StateMachine::toState5},
-		{&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState,	&StateMachine::toState6},
-		{&StateMachine::toState7,			&StateMachine::toUndefinedState,	&StateMachine::toState6}
-	} };
+	_fsmTable = {
+		{
+			{&StateMachine::toState2,			&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState},
+			{&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState,	&StateMachine::toState3},
+			{&StateMachine::toUndefinedState,	&StateMachine::toState4,			&StateMachine::toUndefinedState},
+			{&StateMachine::toUndefinedState,	&StateMachine::toState4,			&StateMachine::toState5},
+			{&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState,	&StateMachine::toState6},
+			{&StateMachine::toState7,			&StateMachine::toUndefinedState,	&StateMachine::toState6}
+		}
+	};
 	_currentState = 0;
 }
 
@@ -18,30 +20,36 @@ timur::StateMachine::~StateMachine()
 {
 }
 
-unsigned int timur::StateMachine::interpreter(const char preSignal)
+size_t timur::StateMachine::interpreter(const char preSignal)
 {
 	switch (preSignal)
 	{
-		case '+': return 0;
-		case 'a': return 1;
-		case 'b': return 2;
-		default: throw preSignal;
+	case '+':
+		return 0;
+	case 'a':
+		return 1;
+	case 'b':
+		return 2;
+	default:
+		return static_cast<size_t>(preSignal);
 	}
 }
 
 std::vector<std::string> timur::StateMachine::findSubString(std::string inputString)
 {
-	for (int i = 0; i < inputString.size(); ++i)
+	_allSubstring.clear();
+	for (size_t i = 0; i < inputString.size(); ++i)
 	{
-		for (int j = i; j < inputString.size(); ++j)
+		for (size_t j = i; j < inputString.size(); ++j)
 		{
-			try
+			const size_t signal = interpreter(inputString[j]);
+			if (static_cast<size_t>(inputString[j]) - signal != 0)
 			{
-				(this ->* _fsmTable[_currentState][interpreter(inputString[j])])(inputString[j]);
+				(this ->* _fsmTable[_currentState][signal])(inputString[j]);
 			}
-			catch (const char error)
+			else
 			{
-				std::cout << "Error: " << error << " - unknown symbol." <<std::endl;
+				std::cout << "Error: " << inputString[j] << " - unknown symbol." << std::endl;
 				_substring.clear();
 				_currentState = 0;
 			}
@@ -56,10 +64,7 @@ std::vector<std::string> timur::StateMachine::findSubString(std::string inputStr
 }
 
 
-void timur::StateMachine::toState1(const char signal)
-{
-	_currentState = 0;
-}
+void timur::StateMachine::toState1(const char signal) { _currentState = 0; }
 
 void timur::StateMachine::toState2(const char signal)
 {

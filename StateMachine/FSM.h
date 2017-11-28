@@ -36,7 +36,7 @@ namespace timur
 		/**
 		 * \brief Current state number.
 		 */
-		int _currentState;
+		ptrdiff_t _currentState;
 
 		/**
 		 * \brief The resulting array containing all the found substrings.
@@ -101,7 +101,7 @@ namespace timur
 		 * \param[in] preSignal Character derived from string.
 		 * \return An integer corresponding to this character.
 		 */
-		static unsigned int interpreter(const char preSignal);
+		static size_t interpreter(const char preSignal);
 	public:
 
 		StateMachine();
