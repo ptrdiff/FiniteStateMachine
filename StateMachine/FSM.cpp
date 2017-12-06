@@ -5,22 +5,18 @@ timur::StateMachine::StateMachine()
 {
 	_fsmTable = {
 		{
-			{&StateMachine::toState2,			&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState},
-			{&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState,	&StateMachine::toState3},
-			{&StateMachine::toUndefinedState,	&StateMachine::toState4,			&StateMachine::toUndefinedState},
-			{&StateMachine::toUndefinedState,	&StateMachine::toState4,			&StateMachine::toState5},
-			{&StateMachine::toUndefinedState,	&StateMachine::toUndefinedState,	&StateMachine::toState6},
-			{&StateMachine::toState7,			&StateMachine::toUndefinedState,	&StateMachine::toState6}
+			{&StateMachine::toState2, &StateMachine::toUndefinedState, &StateMachine::toUndefinedState},
+			{&StateMachine::toUndefinedState, &StateMachine::toUndefinedState, &StateMachine::toState3},
+			{&StateMachine::toUndefinedState, &StateMachine::toState4, &StateMachine::toUndefinedState},
+			{&StateMachine::toUndefinedState, &StateMachine::toState4, &StateMachine::toState5},
+			{&StateMachine::toUndefinedState, &StateMachine::toUndefinedState, &StateMachine::toState6},
+			{&StateMachine::toState7, &StateMachine::toUndefinedState, &StateMachine::toState6}
 		}
 	};
 	_currentState = 0;
 }
 
-timur::StateMachine::~StateMachine()
-{
-}
-
-size_t timur::StateMachine::interpreter(const char preSignal)
+ptrdiff_t timur::StateMachine::interpreter(const char preSignal)
 {
 	switch (preSignal)
 	{
@@ -31,7 +27,7 @@ size_t timur::StateMachine::interpreter(const char preSignal)
 	case 'b':
 		return 2;
 	default:
-		return static_cast<size_t>(preSignal);
+		return -1;
 	}
 }
 
@@ -43,7 +39,7 @@ std::vector<std::string> timur::StateMachine::findSubString(std::string inputStr
 		for (size_t j = i; j < inputString.size(); ++j)
 		{
 			const size_t signal = interpreter(inputString[j]);
-			if (static_cast<size_t>(inputString[j]) - signal != 0)
+			if (signal != -1)
 			{
 				(this ->* _fsmTable[_currentState][signal])(inputString[j]);
 			}
@@ -64,7 +60,10 @@ std::vector<std::string> timur::StateMachine::findSubString(std::string inputStr
 }
 
 
-void timur::StateMachine::toState1(const char signal) { _currentState = 0; }
+void timur::StateMachine::toState1(const char signal)
+{
+	_currentState = 0;
+}
 
 void timur::StateMachine::toState2(const char signal)
 {

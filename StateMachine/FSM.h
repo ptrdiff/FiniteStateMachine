@@ -101,7 +101,7 @@ namespace timur
 		 * \param[in] preSignal Character derived from string.
 		 * \return An integer corresponding to this character.
 		 */
-		static size_t interpreter(const char preSignal);
+		static ptrdiff_t interpreter(const char preSignal);
 	public:
 
 		StateMachine();
@@ -111,8 +111,6 @@ namespace timur
 		 * \return Array containing all found substrings.
 		 */
 		std::vector<std::string>  findSubString(std::string inputString);
-
-		~StateMachine();
 	};
 }
 
