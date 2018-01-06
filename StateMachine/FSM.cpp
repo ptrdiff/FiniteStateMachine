@@ -38,7 +38,7 @@ std::vector<std::string> timur::StateMachine::findSubString(std::string inputStr
 	{
 		for (size_t j = i; j < inputString.size(); ++j)
 		{
-			const size_t signal = interpreter(inputString[j]);
+			const ptrdiff_t signal = interpreter(inputString[j]);
 			if (signal != -1)
 			{
 				(this ->* _fsmTable[_currentState][signal])(inputString[j]);
